@@ -1,15 +1,22 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.swagger.models.HttpMethod;
+import io.swagger.models.Operation;
+/**
+ * 
+ * @author pcollin
+ *
+ */
 public class Path {
 	
 	//ATTRIBUTES
-	private String pathName;
-	private String pathType;
-	
-	private List<Parameter> pathParameters = new ArrayList<Parameter>();
+	private Map<String, Operation> pathOperations  = new HashMap<String, Operation>();
+	private String pathName;	
 
 	//GETTERS AND SETTERS
 	public String getPathName() {
@@ -20,20 +27,11 @@ public class Path {
 		this.pathName = pathName;
 	}
 
-	public String getPathType() {
-		return pathType;
+	public Map<String, Operation> getPathOperations() {
+		return pathOperations;
 	}
 
-	public void setPathType(String pathType) {
-		this.pathType = pathType;
+	public void setPathOperations(Map<String, Operation> pathOperations) {
+		this.pathOperations = pathOperations;
 	}
-
-	public List<Parameter> getPathParameters() {
-		return pathParameters;
-	}
-
-	public void setPathParameters(List<Parameter> pathParameters) {
-		this.pathParameters = pathParameters;
-	}
-
 }

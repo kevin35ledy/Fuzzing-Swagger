@@ -2,12 +2,17 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * 
+ * @author pcollin
+ *
+ */
 public class Queries {
 	
 	//ATTRIBUTES
 	private List<Path> queryPaths;
 
+	//GETTERS AND SETTERS
 	public Queries(List<Path> queryPath) {
 		super();
 		this.queryPaths = queryPath;
