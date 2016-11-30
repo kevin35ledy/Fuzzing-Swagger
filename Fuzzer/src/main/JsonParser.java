@@ -3,11 +3,10 @@ package main;
 import io.swagger.parser.SwaggerParser;
 import io.swagger.models.Swagger;
 
-import 
-
 public class JsonParser {
 
-	Swagger swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
+	Swagger swagger = new SwaggerParser().read("https://github.com/akx/twitter-swagger-api-defs/blob/master/twitter_api.json");
+	
 	
 	
 }
