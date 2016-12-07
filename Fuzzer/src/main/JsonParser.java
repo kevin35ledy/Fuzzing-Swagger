@@ -34,6 +34,39 @@ public class JsonParser {
 		return swagger;
 	}
 	
+	/**
+	 * Get the $ref field's value of parameters
+	 * @return
+	 */
+//	public static String getDefinitionReference(Operation op){
+//		String res = "";
+//		op.getParameters().
+//		return res;
+//	}
+	
+	public static Parameter getParameters(Operation op){
+		Parameter paramRes = new Parameter();
+		String name = "";
+		String type = "";
+		boolean required = false;
+		for(io.swagger.models.parameters.Parameter paramSwag : op.getParameters()){
+//			System.out.println("PARAMETER IN : " + param.getIn());
+			//si le paramètre est de type path parameter
+			if(paramSwag instanceof io.swagger.models.parameters.PathParameter){
+				name = paramSwag.getName();
+				type = ((io.swagger.models.parameters.PathParameter) paramSwag).getType();
+				required = paramSwag.getRequired();
+			}
+			else{
+				//TODO
+			}
+			paramRes.setParameterName(name);
+			paramRes.setParameterType(type);
+			paramRes.setParameterRequirement(required);
+		}
+		return paramRes;
+	}
+	
 
 	/**
 	 * 
@@ -51,17 +84,28 @@ public class JsonParser {
 		for (Map.Entry<String, io.swagger.models.Path> path : pathsMap.entrySet())
 		{
 			Path p = new Path();
+			Map<String, model.Operation> pathOperations = p.getPathOperations();
 			//get path's name
 			p.setPathName(path.getKey());
 			
 			//get all path's operations
-			path.getValue().getOperations();
 			Map<HttpMethod, Operation> operationsMap = path.getValue().getOperationMap();
 			for(Map.Entry<HttpMethod, Operation> op : operationsMap.entrySet()){
-				p.getPathOperations().put(op.getKey().toString(), op.getValue());
+				//key operation
+				String opKey = op.getKey().toString();
+				//operation summary
+				String opDescription = op.getValue().getSummary();
+				//operation building
+				Parameter opParam = getParameters(op.getValue());
+				//Display
+				System.out.println("OPERATION = " + opKey);
+				
+				model.Operation operationModel = new model.Operation();
+				operationModel.setOperationDescription(opDescription);
+				operationModel.getOperationParameters().add(opParam);
+				pathOperations.put(opKey, operationModel);
+				
 			}
-//			p.setPathType(pathType);
-//			p.setPathParameters(pathParameters);
 			
 			
 			

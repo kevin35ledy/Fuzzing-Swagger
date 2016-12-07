@@ -66,8 +66,8 @@ public class Launcher {
 				
 				String urlString = urlBase + p.getPathName();
 				
-				Map<String, io.swagger.models.Operation> m = p.getPathOperations();
-				io.swagger.models.Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
+				Map<String, Operation> m = p.getPathOperations();
+				Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
 				
 				
 				URL url = new URL(urlString);
