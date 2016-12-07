@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.swagger.models.parameters.Parameter;
+import model.Parameter;
 import model.Operation;
 import model.Path;
 import model.Queries;
@@ -30,7 +30,7 @@ public class Launcher {
 			
 			try {
 				for(Response response : executeQuery(qu)){
-					System.out.println(response.toString());
+					//System.out.println(response.toString());
 				}
 				
 			} catch (MalformedURLException e) {
@@ -62,8 +62,13 @@ public class Launcher {
 				
 				String urlString = urlBase + p.getPathName();
 				
-				Map<String, io.swagger.models.Operation> m = p.getPathOperations();
-				io.swagger.models.Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
+				Map<String, Operation> m = p.getPathOperations();
+				
+				Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
+				for(Parameter param : o.getOperationParameters()){
+					System.out.print("param name : "+param.getParameterName() + ", type : " + param.getParameterType());
+				}
+				System.out.println("\n");
 
 				
 				
