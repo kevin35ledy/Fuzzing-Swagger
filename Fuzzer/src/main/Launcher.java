@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,27 +27,20 @@ public class Launcher {
 		for(Path pa : qu.getQueryPath()){
 			System.out.println("### PATH ### " + pa.getPathName() + "\n");			
 
-		
-		
-		
-			//Queries q = new Queries();
-			Path p = new Path();
-			
-			p.setPathName("");
-	//		p.setPathType("get");
-			//qu.addPath(p);
 			
 			try {
-				Response response = executeQuery(qu);
+				for(Response response : executeQuery(qu)){
+					System.out.println(response.toString());
+				}
 				
-				
-				//System.out.println(response);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	
 		}
+		
+		
 }
 	
 	
@@ -56,25 +50,33 @@ public class Launcher {
 	}
 	
 	
-	public static Response executeQuery(Queries q) throws MalformedURLException{
-		Response response = new Response();
+	public static List<Response> executeQuery(Queries q) throws MalformedURLException{
+		List<Response> listResponse = new ArrayList<Response>();
 		String res = "";
 		//iterating on paths in q
 		for(Path p : q.getQueryPath()){
+			
 			//generate url 
 			try{
 				
+				
 				String urlString = urlBase + p.getPathName();
+				
 				
 				Map<String, io.swagger.models.Operation> m = p.getPathOperations();
 				io.swagger.models.Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
 				
 				
-				URL url = new URL(urlString);
+				//urlString.replaceAll("{}", "2");
+				String urlTest = urlString.replaceFirst("\\{petId\\}", "1");
+				
+				Response response = new Response(urlTest);
+				
+				
+				URL url = new URL(urlTest);
 				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 				
 				
-//				connection.setRequestMethod(type); 
 				connection.connect();
 				
 				
@@ -98,14 +100,19 @@ public class Launcher {
 				res+= sb.toString()+"\n\n";
 				
 				
+				listResponse.add(response);
+				
 			}catch(Exception e){
-				System.err.println(e);
+				//System.err.println(e);
 			}
 				
 				
 		}
+		
+		
+
 			
 			
-		return response;
+		return listResponse;
 	}
 }

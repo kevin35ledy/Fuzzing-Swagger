@@ -8,9 +8,10 @@ public class Response {
 
 	private Map<String, List<String>> headers;
 	private String content; 
+	private String urlRequest;
 	
-	public Response(){
-		
+	public Response(String url){
+		this.urlRequest = url;
 	}
 	
 	//GETTERS AND SETTERS
@@ -56,12 +57,16 @@ public class Response {
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("---------------------");
-		sb.append("------HEADERS--------");
-		sb.append("---------------------");
-		sb.append(headersToString());
-		sb.append("\n--------------------\n");
+		sb.append("---------------------\n");
+		sb.append(this.urlRequest+"\n");
+		sb.append("---------------------\n");
+		sb.append("------HEADERS--------\n");
+		sb.append(headersToString()+"\n");
+		sb.append("--------------------\n");
 		sb.append(content);
+		sb.append("---------------------\n");
+		sb.append("---------------------\n");
+		sb.append("---------------------\n\n\n\n\n");
 		
 		return sb.toString();
 	}
