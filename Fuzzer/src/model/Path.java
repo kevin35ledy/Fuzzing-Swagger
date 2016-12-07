@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.swagger.models.HttpMethod;
-import io.swagger.models.Operation;
+import io.swagger.models.Model;
+import model.Operation;
 /**
  * 
  * @author pcollin
