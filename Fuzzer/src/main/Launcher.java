@@ -4,19 +4,20 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import io.swagger.models.parameters.Parameter;
+import model.Operation;
 import model.Path;
 import model.Queries;
-
 import model.Response;
 
 public class Launcher {
 	
 	//public final String urlBase = "https://twitter.com/";
-	public final static String urlBase = "http://google.com/";
+	public final static String urlBase = "http://petstore.swagger.io/v2";
 
 	public static void main(String[] args) {		
 		//Step 1
@@ -28,24 +29,24 @@ public class Launcher {
 		
 		
 		
-		Queries q = new Queries();
-		Path p = new Path();
-		
-		p.setPathName("");
-//		p.setPathType("get");
-		q.addPath(p);
-		
-		try {
-			Response response = executeQuery(q);
+			//Queries q = new Queries();
+			Path p = new Path();
 			
+			p.setPathName("");
+	//		p.setPathType("get");
+			//qu.addPath(p);
 			
-			System.out.println(response);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				Response response = executeQuery(qu);
+				
+				
+				//System.out.println(response);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
 		}
-
-	}
 }
 	
 	
@@ -63,15 +64,17 @@ public class Launcher {
 			//generate url 
 			try{
 				
-				String urlString = urlBase;
-//				String type = p.getPathType().toUpperCase();
+				String urlString = urlBase + p.getPathName();
+				
+				Map<String, io.swagger.models.Operation> m = p.getPathOperations();
+				io.swagger.models.Operation o = m.get("GET");//pose probleme car plusieurs fois clé GET
 				
 				
 				URL url = new URL(urlString);
 				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 				
 				
-//				connection.setRequestMethod(type);
+//				connection.setRequestMethod(type); 
 				connection.connect();
 				
 				
