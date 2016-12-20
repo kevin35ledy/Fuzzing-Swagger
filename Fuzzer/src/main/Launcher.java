@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Launcher {
 			requests = generateQuery(pa);
 			
 			for(Query q:requests){
-				//System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n\n");
+				System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n\n");
 			}
 
 
@@ -97,9 +98,13 @@ public class Launcher {
 					case "integer":
 						//check empty
 						requests.add(intEmpty(urlToTest, p));
-						
-						//check buffer overflow
+						//check buffer overflow with length
+						requests.add(intBufferOver(urlToTest, p,25));
+						requests.add(intBufferOver(urlToTest, p,100));
+						requests.add(intBufferOver(urlToTest, p,200));
+						requests.add(intBufferOver(urlToTest, p,500));
 						//check string
+						requests.add(intString(urlToTest, p));
 						//check 0 value
 						requests.add(intZero(urlToTest, p));
 						//check negatives value
@@ -160,13 +165,41 @@ public class Launcher {
 		Random random=new Random();
 		int randomNumber=(random.nextInt(65536)-32768);
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", randomNumber+"");
-		Query q = new Query(u,"Test : param int expected = 0");
+		Query q = new Query(u,"Test : param int expected and value given is negative");
 		return q;
 	}
 	
+	/**
+	 * generate query with a parameter integer expected and value given is a sequence of character
+	 */
+	public static Query intString(String url, Parameter p){
+		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=:;,-_)({}[]'\"~@";
+		Random random=new Random();
+		StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < 10; i++) {
+            int num = random.nextInt(80);
+            buffer.append(str.charAt(num));
+        }
+		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
+		Query q = new Query(u,"Test : param int expected and value given is  a sequence of character");
+		return q;
+	}
 	
-	
-	
+	/**
+	 * generate query with a parameter integer expected and value given is a sequence of character
+	 */
+	public static Query intBufferOver(String url, Parameter p, int length){
+		String str = "123456789";
+		Random random=new Random();
+		StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int num = random.nextInt(9);
+            buffer.append(str.charAt(num));
+        }
+		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
+		Query q = new Query(u,"Test : param int expected and value given is  a sequence of character");
+		return q;
+	}
 	
 
 
