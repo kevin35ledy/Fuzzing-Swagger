@@ -12,8 +12,10 @@ import io.swagger.models.Model;
 import model.Operation;
 /**
  * 
- * @author pcollin
+ * @author pcollin & kevin35ledy
  *
+ *Class representing a path in the swagger api 
+ *It contains several operations
  */
 public class Path {
 	
@@ -34,6 +36,9 @@ public class Path {
 		return pathOperations;
 	}
 	
+	public Operation getOperationOfType(String type){
+		return this.pathOperations.get(type);
+	}
 
 	public void setPathOperations(Map<String, Operation> pathOperations) {
 		this.pathOperations = pathOperations;

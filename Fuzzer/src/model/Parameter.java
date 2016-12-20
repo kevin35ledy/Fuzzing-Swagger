@@ -1,11 +1,17 @@
 package model;
 
+/**
+ * 
+ * @author pcollin & kevin35ledy
+ *
+ *Class Parameter represents a parameter of an Operation
+ */
 public class Parameter {
 
 	//ATTRIBUTES
 	private String parameterName;
 	private String parameterType;
-	private boolean parameterRequirement;
+	private boolean parameterRequired;
 	
 	//GETTERS AND SETTERS
 	public String getParameterName() {
@@ -20,11 +26,11 @@ public class Parameter {
 	public void setParameterType(String parameterType) {
 		this.parameterType = parameterType;
 	}
-	public boolean isParameterRequirement() {
-		return parameterRequirement;
+	public boolean isParameterRequired() {
+		return parameterRequired;
 	}
 	public void setParameterRequirement(boolean parameterRequirement) {
-		this.parameterRequirement = parameterRequirement;
+		this.parameterRequired = parameterRequirement;
 	}
 	
 }

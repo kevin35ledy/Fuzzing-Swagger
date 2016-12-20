@@ -5,8 +5,9 @@ import java.util.List;
 
 /**
  * 
- * @author pcollin
+ * @author pcollin & kevin35ledy
  *
+ * An Operation is a path of swagger api that can be called, it contains some parameters
  */
 public class Operation {
 	
@@ -27,7 +28,7 @@ public class Operation {
 	public void setOperationDescription(String operationDescription) {
 		this.operationDescription = operationDescription;
 	}
-	
-	
+
+
 
 }

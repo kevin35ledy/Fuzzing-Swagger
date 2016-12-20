@@ -4,6 +4,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+/**
+ * 
+ * @author pcollin & kevin35ledy
+ *
+ *Response is the result obtained after emitting a request on swagger api 
+ *
+ */
+
 public class Response {
 
 	private Map<String, List<String>> headers;

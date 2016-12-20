@@ -6,6 +6,14 @@ import java.util.List;
 import model.Operation;
 import model.Response;
 
+/**
+ * 
+ * @author pcollin & kevin35ledy
+ *
+ *
+ *Class to test our program
+ */
+
 public class Test {
 	
 	private String typeOperation;
