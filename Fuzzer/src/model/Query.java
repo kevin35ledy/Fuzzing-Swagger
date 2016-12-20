@@ -11,6 +11,15 @@ package model;
 
 public class Query {
 	
+	private String url;
+	private String queryDescription;
+
+	
+	public Query(String url, String queryDescription){
+		this.url = url;
+		this.queryDescription = queryDescription;
+	}
+	
 	public String getUrl() {
 		return url;
 	}
@@ -27,12 +36,5 @@ public class Query {
 		this.queryDescription = queryDescription;
 	}
 
-	private String url;
-	private String queryDescription;
-	
-	public Query(String url, String queryDescription){
-		this.url = url;
-		this.queryDescription = queryDescription;
-	}
 	
 }
