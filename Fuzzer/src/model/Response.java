@@ -105,10 +105,6 @@ public class Response {
 		sb.append("Response : "+this.getResponseCode()+"\n");
 		sb.append("---------------------\n");
 		sb.append(this.error+"\n");
-		//sb.append("------HEADERS--------\n");
-		//sb.append(headersToString()+"\n");
-		//sb.append("--------------------\n");
-		//sb.append(content);
 		sb.append("---------------------\n\n\n\n\n");
 		
 		return sb.toString();
