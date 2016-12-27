@@ -57,6 +57,10 @@ public class JsonParser {
 				type = ((io.swagger.models.parameters.PathParameter) paramSwag).getType();
 				required = paramSwag.getRequired();
 			}
+			if(paramSwag instanceof io.swagger.models.parameters.QueryParameter){
+				name = paramSwag.getName();
+				required = paramSwag.getRequired();
+			}
 			else{
 				//TODO
 			}
