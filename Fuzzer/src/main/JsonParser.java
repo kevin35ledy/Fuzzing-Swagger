@@ -14,7 +14,9 @@ import io.swagger.models.Swagger;
 
 /**
  * Parsing the JSON from a specific URL 
- * @author pcollin
+ * 
+ * @author pcollin & kevin35ledy
+ *
  *
  */
 public class JsonParser {
@@ -74,14 +76,14 @@ public class JsonParser {
 
 	/**
 	 * 
-	 * @return Queries Object
+	 * @return ApiPaths Object
 	 */
-	public static Queries modelBuilding(){
+	public static ApiPaths modelBuilding(){
 		
 		//retrieve the swagger object
 		Swagger swagger = getJson();
 		
-		Queries result = new Queries();
+		ApiPaths result = new ApiPaths();
 		
 		//get all the paths
 		Map<String,io.swagger.models.Path> pathsMap = swagger.getPaths(); 
@@ -114,7 +116,7 @@ public class JsonParser {
 			
 			
 			//add the path to queries list
-			result.getQueryPath().add(p);;
+			result.getApiPath().add(p);;
 		}
 		
 

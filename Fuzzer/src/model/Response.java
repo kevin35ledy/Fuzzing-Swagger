@@ -1,20 +1,61 @@
 package model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+/**
+ * 
+ * @author pcollin & kevin35ledy
+ *
+ *Response is the result obtained after emitting a request on swagger api 
+ *
+ */
+
 public class Response {
 
+	private Query query;
 	private Map<String, List<String>> headers;
 	private String content; 
+	private int responseCode;
+	private String error;
 	
-	public Response(){
-		
+	public Response(Query query){
+		this.query = query;
+		this.headers = new HashMap<String, List<String>> ();
+		this.content="";
+		this.responseCode=-1;
+		this.error = "";
 	}
 	
 	//GETTERS AND SETTERS
 	
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public Query getQuery() {
+		return query;
+	}
+
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+
+	public int getResponseCode() {
+		return responseCode;
+	}
+
+	public void setResponseCode(int responseCode) {
+		this.responseCode = responseCode;
+	}
+
 	public Map<String, List<String>> getHeaders() {
 		return headers;
 	}
@@ -56,12 +97,15 @@ public class Response {
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("---------------------");
-		sb.append("------HEADERS--------");
-		sb.append("---------------------");
-		sb.append(headersToString());
-		sb.append("\n--------------------\n");
-		sb.append(content);
+		sb.append("---------------------\n");
+		sb.append(this.query.getQueryDescription()+"\n");
+		sb.append("---------------------\n");
+		sb.append(this.query.getUrl()+"\n");
+		sb.append("---------------------\n");
+		sb.append("Response : "+this.getResponseCode()+"\n");
+		sb.append("---------------------\n");
+		sb.append(this.error+"\n");
+		sb.append("---------------------\n\n\n\n\n");
 		
 		return sb.toString();
 	}
