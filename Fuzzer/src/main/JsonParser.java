@@ -3,6 +3,7 @@ package main;
 import io.swagger.parser.SwaggerParser;
 import model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 import io.swagger.models.HttpMethod;
 import io.swagger.models.Operation;
 import io.swagger.models.Swagger;
+import io.swagger.models.properties.Property;
 
 /**
  * Parsing the JSON from a specific URL 
@@ -40,35 +42,52 @@ public class JsonParser {
 	 * Get the $ref field's value of parameters
 	 * @return
 	 */
-//	public static String getDefinitionReference(Operation op){
+//	public static String getDefinitionReference(Swagger swagger, Operation op){
+//		swagger.getDefinitions();
 //		String res = "";
 //		op.getParameters().
 //		return res;
 //	}
 	
-	public static Parameter getParameters(Operation op){
-		Parameter paramRes = new Parameter();
+	public static List<Parameter> getParameters(Operation op){
+		List<Parameter> paramRes = new ArrayList<Parameter>();
 		String name = "";
 		String type = "";
+		String location = "";
+		Property items = null;
 		boolean required = false;
 		for(io.swagger.models.parameters.Parameter paramSwag : op.getParameters()){
-//			System.out.println("PARAMETER IN : " + param.getIn());
-			//si le paramètre est de type path parameter
+			Parameter param = new Parameter();
+
+			//PARAMETER TYPE
 			if(paramSwag instanceof io.swagger.models.parameters.PathParameter){
 				name = paramSwag.getName();
+				location = "path";
 				type = ((io.swagger.models.parameters.PathParameter) paramSwag).getType();
 				required = paramSwag.getRequired();
 			}
+			//QUERY TYPE
 			if(paramSwag instanceof io.swagger.models.parameters.QueryParameter){
 				name = paramSwag.getName();
+				location = "query";
 				required = paramSwag.getRequired();
+				type = ((io.swagger.models.parameters.QueryParameter) paramSwag).getType();
+				if(type.equals("array")){
+					//System.out.println("Je suis un tableau !");
+					items = ((io.swagger.models.parameters.QueryParameter) paramSwag).getItems();
+				}
+			}
+			//BODY TYPE
+			if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
+			
 			}
 			else{
 				//TODO
 			}
-			paramRes.setParameterName(name);
-			paramRes.setParameterType(type);
-			paramRes.setParameterRequirement(required);
+			param.setParameterName(name);
+			param.setParameterType(type);
+			param.setParameterRequirement(required);
+			paramRes.add(param);
 		}
 		return paramRes;
 	}
@@ -82,6 +101,7 @@ public class JsonParser {
 		
 		//retrieve the swagger object
 		Swagger swagger = getJson();
+		
 		
 		ApiPaths result = new ApiPaths();
 		
@@ -102,13 +122,13 @@ public class JsonParser {
 				//operation summary
 				String opDescription = op.getValue().getSummary();
 				//operation building
-				Parameter opParam = getParameters(op.getValue());
+				List<Parameter> opParam = getParameters(op.getValue());
 				//Display
 				System.out.println("OPERATION = " + opKey);
 				
 				model.Operation operationModel = new model.Operation();
 				operationModel.setOperationDescription(opDescription);
-				operationModel.getOperationParameters().add(opParam);
+				operationModel.setOperationParameters(opParam);
 				pathOperations.put(opKey, operationModel);
 				
 			}
@@ -116,7 +136,7 @@ public class JsonParser {
 			
 			
 			//add the path to queries list
-			result.getApiPath().add(p);;
+			result.getApiPath().add(p);
 		}
 		
 

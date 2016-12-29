@@ -1,5 +1,7 @@
 package model;
 
+import io.swagger.models.properties.Property;
+
 /**
  * 
  * @author pcollin & kevin35ledy
@@ -12,6 +14,9 @@ public class Parameter {
 	private String parameterName;
 	private String parameterType;
 	private boolean parameterRequired;
+	private String parameterLocation;
+	private Property parameterItems;
+	
 	
 	//GETTERS AND SETTERS
 	public String getParameterName() {
@@ -31,6 +36,18 @@ public class Parameter {
 	}
 	public void setParameterRequirement(boolean parameterRequirement) {
 		this.parameterRequired = parameterRequirement;
+	}
+	public String getParameterLocation() {
+		return parameterLocation;
+	}
+	public void setParameterLocation(String parameterLocation) {
+		this.parameterLocation = parameterLocation;
+	}
+	public Property getParameterItems() {
+		return parameterItems;
+	}
+	public void setParameterItems(Property parameterItems) {
+		this.parameterItems = parameterItems;
 	}
 	
 }
