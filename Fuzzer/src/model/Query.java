@@ -5,7 +5,7 @@ package model;
  * 
  * @author pcollin & kevin35ledy
  *
- *Class Query represents a request that will call a swagger api function
+ *Class Query representing a request that will call a swagger api function
  *It contains an url to call, a description of the test, and what is expected as a response 
  */
 
