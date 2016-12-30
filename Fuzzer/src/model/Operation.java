@@ -28,6 +28,20 @@ public class Operation {
 	public void setOperationDescription(String operationDescription) {
 		this.operationDescription = operationDescription;
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n");
+		builder.append("\t\t");
+		builder.append("Operation [operationParameters=");
+		builder.append("\n");
+		builder.append(operationParameters);
+		builder.append(", operationDescription=");
+		builder.append(operationDescription);
+		builder.append("]");
+		builder.append("\n");
+		return builder.toString();
+	}
 
 
 

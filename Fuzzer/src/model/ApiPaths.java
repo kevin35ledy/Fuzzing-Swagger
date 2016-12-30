@@ -36,6 +36,17 @@ public class ApiPaths {
 	public void addPath(Path p){
 		this.apiPaths.add(p);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ApiPaths [apiPaths=");
+		builder.append(apiPaths);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
 	
 	
 	

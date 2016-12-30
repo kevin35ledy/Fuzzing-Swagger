@@ -43,4 +43,18 @@ public class Path {
 	public void setPathOperations(Map<String, Operation> pathOperations) {
 		this.pathOperations = pathOperations;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n");
+		builder.append("\t");
+		builder.append("Path [pathOperations=");
+		builder.append("\n");
+		builder.append(pathOperations);
+		builder.append(", pathName=");
+		builder.append(pathName);
+		builder.append("]");
+		return builder.toString();
+	}
 }

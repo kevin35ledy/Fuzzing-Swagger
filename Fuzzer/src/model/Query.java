@@ -36,5 +36,16 @@ public class Query {
 		this.queryDescription = queryDescription;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Query [url=");
+		builder.append(url);
+		builder.append(", queryDescription=");
+		builder.append(queryDescription);
+		builder.append("]");
+		return builder.toString();
+	}
+
 	
 }
