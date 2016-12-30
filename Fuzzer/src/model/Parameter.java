@@ -59,5 +59,25 @@ public class Parameter {
 	public void setParameterEnum(List<String> parameterEnum) {
 		this.parameterEnum = parameterEnum;
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("\t\t\t");
+		builder.append("Parameter [parameterName=");
+		builder.append(parameterName);
+		builder.append(", parameterType=");
+		builder.append(parameterType);
+		builder.append(", parameterRequired=");
+		builder.append(parameterRequired);
+		builder.append(", parameterLocation=");
+		builder.append(parameterLocation);
+		builder.append(", parameterItems=");
+		builder.append(parameterItems);
+		builder.append(", parameterEnum=");
+		builder.append(parameterEnum);
+		builder.append("]");
+		builder.append("\n");
+		return builder.toString();
+	}
 	
 }

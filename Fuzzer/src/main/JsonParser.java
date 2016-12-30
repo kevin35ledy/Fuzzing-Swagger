@@ -158,6 +158,7 @@ public class JsonParser {
 			}
 			param.setParameterName(name);
 			param.setParameterType(type);
+			param.setParameterLocation(location);
 			param.setParameterRequirement(required);
 			paramRes.add(param);
 		}

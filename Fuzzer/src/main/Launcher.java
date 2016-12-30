@@ -33,6 +33,10 @@ public class Launcher {
 	public static void main(String[] args) {		
 		//Step 1
 		ApiPaths qu = JsonParser.modelBuilding();
+		
+		System.out.println("############ VISULATION DE L'OBJET CREE A PARTIR DE JSON PARSER ###########################");
+		System.out.println(qu.toString());
+		System.out.println("#######################################");
 		List<Response> responses = new ArrayList<Response>();
 
 		for(Path pa : qu.getApiPath()){
