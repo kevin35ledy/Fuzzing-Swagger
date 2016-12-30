@@ -3,16 +3,29 @@ package main;
 import io.swagger.parser.SwaggerParser;
 import model.*;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import io.swagger.models.HttpMethod;
+import io.swagger.models.Model;
 import io.swagger.models.Operation;
 import io.swagger.models.Swagger;
 import io.swagger.models.properties.Property;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Parsing the JSON from a specific URL 
@@ -23,6 +36,9 @@ import io.swagger.models.properties.Property;
  */
 public class JsonParser {
 	
+	
+	private static JsonNode root = null;
+	
 	/**
 	 * Get a Swagger Object from a url
 	 * @return a Swagger Object
@@ -32,6 +48,9 @@ public class JsonParser {
 		Swagger swagger = null;
 		try {
 			swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
+			
+			root = new ObjectMapper().readTree(new URL("http://petstore.swagger.io/v2/swagger.json"));
+	
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e.getMessage());
 		}
@@ -42,14 +61,61 @@ public class JsonParser {
 	 * Get the $ref field's value of parameters
 	 * @return
 	 */
-//	public static String getDefinitionReference(Swagger swagger, Operation op){
-//		swagger.getDefinitions();
-//		String res = "";
-//		op.getParameters().
-//		return res;
-//	}
+	public static Model getDefinitionReference(Swagger swagger, Operation op, String ref){
+		Map<String, Model> map = swagger.getDefinitions();
+		for (Map.Entry<String, Model> def : map.entrySet())
+		{
+			if(def.getKey().equals(ref)){
+				return def.getValue();
+			}
+		}
+		
+		return null;
+	}
 	
-	public static List<Parameter> getParameters(Operation op){
+	/**
+	 * Retrieve a list of parameters from a definition 
+	 * @param mod
+	 * @return
+	 */
+	public static List<Parameter> getParametersFromDefinition(Model mod, String ref){
+		
+		JsonNode node = null;	
+	
+		
+		List<Parameter> res = new ArrayList<Parameter>();
+		Map<String, Property> map = new HashMap<String, Property>();
+		try {
+			map = mod.getProperties();			
+			for (Map.Entry<String, Property> prop : map.entrySet())
+			{
+				Parameter param = new Parameter();
+				param.setParameterName(prop.getKey());
+				node = root;
+				Property p = prop.getValue();
+				param.setParameterType(p.getType());
+				
+				//check if field enum exists 
+				String jsonPath = "/definitions/" + ref + "/properties/"+ prop.getKey()+"/enum";
+				node = node.at(jsonPath); 
+				if(!node.isMissingNode()){
+					ArrayNode enumNode = (ArrayNode) node;
+					Iterator<JsonNode> enumIterator = enumNode.elements();
+					while(enumIterator.hasNext()){
+						JsonNode it = enumIterator.next();
+						param.getParameterEnum().add(it.asText());
+					
+					}
+				}
+				res.add(param);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+		return res;
+	}
+	
+	public static List<Parameter> getParametersFromOperation(Swagger swagger, Operation op){
 		List<Parameter> paramRes = new ArrayList<Parameter>();
 		String name = "";
 		String type = "";
@@ -79,7 +145,13 @@ public class JsonParser {
 			}
 			//BODY TYPE
 			if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
-			
+				String ref = ((io.swagger.models.parameters.BodyParameter) paramSwag).getSchema().getReference();
+				ref = StringUtils.substringAfter(ref, "#/definitions/");
+				System.out.println("Reference = " + ref);
+				//get the model corresponding to the reference
+				Model mod = getDefinitionReference(swagger, op, ref);
+				return getParametersFromDefinition(mod, ref);
+				
 			}
 			else{
 				//TODO
@@ -122,7 +194,7 @@ public class JsonParser {
 				//operation summary
 				String opDescription = op.getValue().getSummary();
 				//operation building
-				List<Parameter> opParam = getParameters(op.getValue());
+				List<Parameter> opParam = getParametersFromOperation(swagger, op.getValue());
 				//Display
 				System.out.println("OPERATION = " + opKey);
 				

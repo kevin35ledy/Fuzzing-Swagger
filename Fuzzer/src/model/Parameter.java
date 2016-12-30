@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.swagger.models.properties.Property;
 
 /**
@@ -16,6 +19,7 @@ public class Parameter {
 	private boolean parameterRequired;
 	private String parameterLocation;
 	private Property parameterItems;
+	private List<String> parameterEnum = new ArrayList<String>();
 	
 	
 	//GETTERS AND SETTERS
@@ -48,6 +52,12 @@ public class Parameter {
 	}
 	public void setParameterItems(Property parameterItems) {
 		this.parameterItems = parameterItems;
+	}
+	public List<String> getParameterEnum() {
+		return parameterEnum;
+	}
+	public void setParameterEnum(List<String> parameterEnum) {
+		this.parameterEnum = parameterEnum;
 	}
 	
 }
