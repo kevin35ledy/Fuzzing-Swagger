@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -14,6 +16,7 @@ public class Operation {
 	//ATTRIBUTES
 	private List<Parameter> operationParameters = new ArrayList<Parameter>();
 	private String operationDescription;
+	private Map<String, SwaggerResponse> operationResponses = new HashMap<String, SwaggerResponse>();
 	
 	//GETTERS AND SETTERS
 	public List<Parameter> getOperationParameters() {
@@ -28,20 +31,30 @@ public class Operation {
 	public void setOperationDescription(String operationDescription) {
 		this.operationDescription = operationDescription;
 	}
+	public Map<String, SwaggerResponse> getOperationResponses() {
+		return operationResponses;
+	}
+	public void setOperationResponses(Map<String, SwaggerResponse> operationResponses) {
+		this.operationResponses = operationResponses;
+	}
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("\n");
 		builder.append("\t\t");
 		builder.append("Operation [operationParameters=");
-		builder.append("\n");
 		builder.append(operationParameters);
 		builder.append(", operationDescription=");
 		builder.append(operationDescription);
-		builder.append("]");
+		builder.append(", operationResponses=");
+		builder.append(operationResponses);
 		builder.append("\n");
+		builder.append("]");
 		return builder.toString();
 	}
+	
+	
+
 
 
 

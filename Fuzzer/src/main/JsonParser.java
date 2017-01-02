@@ -23,7 +23,10 @@ import io.swagger.models.HttpMethod;
 import io.swagger.models.Model;
 import io.swagger.models.Operation;
 import io.swagger.models.Swagger;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.MapProperty;
 import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -147,7 +150,7 @@ public class JsonParser {
 			if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
 				String ref = ((io.swagger.models.parameters.BodyParameter) paramSwag).getSchema().getReference();
 				ref = StringUtils.substringAfter(ref, "#/definitions/");
-				System.out.println("Reference = " + ref);
+				//System.out.println("Reference = " + ref);
 				//get the model corresponding to the reference
 				Model mod = getDefinitionReference(swagger, op, ref);
 				return getParametersFromDefinition(mod, ref);
@@ -163,6 +166,48 @@ public class JsonParser {
 			paramRes.add(param);
 		}
 		return paramRes;
+	}
+	
+	
+	
+	/**
+	 * Retrieve all responses from a specific operation
+	 * @return
+	 */
+	public static Map<String,SwaggerResponse> getResponsesFromOperation(Operation op){
+		
+		Map<String, SwaggerResponse> res = new HashMap<String, SwaggerResponse>();
+		String responseCode = null;
+		
+		Map<String, io.swagger.models.Response> responses = op.getResponses();
+		for (Map.Entry<String, io.swagger.models.Response> swagResponse : responses.entrySet())
+		{
+			SwaggerResponse rep = new SwaggerResponse();
+			//System.out.println("\t\t" + "RESPONSE = " + swagResponse.getKey());
+			responseCode = swagResponse.getKey();
+			//description
+			rep.setResponseDescription(swagResponse.getValue().getDescription());
+			
+			//schema
+			Property schema = swagResponse.getValue().getSchema();
+			rep.setResponseSchema(schema);
+//			if(schema instanceof ArrayProperty){
+//				System.out.println("\t\t" + "ARRAY = " + ((ArrayProperty) schema).getItems());
+//			}
+//			else if(schema instanceof RefProperty){
+//				System.out.println("\t\t" + "REF = " + ((RefProperty) schema).getSimpleRef());
+//			}
+//			else if(schema instanceof io.swagger.models.properties.MapProperty){
+//				System.out.println("\t\t" + "MAP = " + ((MapProperty)schema).getAdditionalProperties());
+//			}
+			
+			//headers
+			rep.setResponseHeaders(swagResponse.getValue().getHeaders());	
+			
+			res.put(responseCode, rep);
+		}
+		
+		return res;
 	}
 	
 
@@ -186,6 +231,7 @@ public class JsonParser {
 			Map<String, model.Operation> pathOperations = p.getPathOperations();
 			//get path's name
 			p.setPathName(path.getKey());
+			System.out.println("PATH = " + path.getKey());
 			
 			//get all path's operations
 			Map<HttpMethod, Operation> operationsMap = path.getValue().getOperationMap();
@@ -194,14 +240,17 @@ public class JsonParser {
 				String opKey = op.getKey().toString();
 				//operation summary
 				String opDescription = op.getValue().getSummary();
+				//responses
+				Map<String, SwaggerResponse> responses = getResponsesFromOperation(op.getValue());
 				//operation building
 				List<Parameter> opParam = getParametersFromOperation(swagger, op.getValue());
 				//Display
-				System.out.println("OPERATION = " + opKey);
+				System.out.println("\t" +"OPERATION = " + opKey);
 				
 				model.Operation operationModel = new model.Operation();
 				operationModel.setOperationDescription(opDescription);
 				operationModel.setOperationParameters(opParam);
+				operationModel.setOperationResponses(responses);
 				pathOperations.put(opKey, operationModel);
 				
 			}

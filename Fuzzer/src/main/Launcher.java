@@ -36,7 +36,7 @@ public class Launcher {
 		
 		System.out.println("############ VISULATION DE L'OBJET CREE A PARTIR DE JSON PARSER ###########################");
 		System.out.println(qu.toString());
-		System.out.println("#######################################");
+		System.out.println("##################  FIN VISUALISATION  #####################");
 		List<Response> responses = new ArrayList<Response>();
 
 		for(Path pa : qu.getApiPath()){
