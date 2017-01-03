@@ -21,16 +21,26 @@ public class Response {
 	private String content; 
 	private int responseCode;
 	private String error;
+	private Map<String, SwaggerResponse> expectedResult;
 	
+
 	public Response(Query query){
 		this.query = query;
 		this.headers = new HashMap<String, List<String>> ();
 		this.content="";
 		this.responseCode=-1;
 		this.error = "";
+		this.expectedResult = null;
 	}
 	
 	//GETTERS AND SETTERS
+	public Map<String, SwaggerResponse> getExpectedResult() {
+		return expectedResult;
+	}
+	
+	public void setExpectedResult(Map<String, SwaggerResponse> expectedResult) {
+		this.expectedResult = expectedResult;
+	}
 	
 	public String getError() {
 		return error;

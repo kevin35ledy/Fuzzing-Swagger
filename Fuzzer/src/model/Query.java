@@ -13,11 +13,17 @@ public class Query {
 	
 	private String url;
 	private String queryDescription;
+	private Operation op;
 
 	
-	public Query(String url, String queryDescription){
+	public Query(String url, String queryDescription, Operation op){
 		this.url = url;
 		this.queryDescription = queryDescription;
+		this.op = op;
+	}
+	
+	public Operation getOp(){
+		return this.op;
 	}
 	
 	public String getUrl() {
