@@ -74,7 +74,11 @@ public class Launcher {
 					System.out.println(q.getJson().toString());
 					responses.add(executePostQuery(q));
 				}
-				for(Query q:)
+				for(Query q:deleteRequests){
+					System.out.println("\n\n\n\n\nDELETE REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					responses.add(executeDeleteQuery(q));
+				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
