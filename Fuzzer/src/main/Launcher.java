@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +18,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import io.swagger.models.HttpMethod;
@@ -375,16 +377,15 @@ public class Launcher {
 							break;
 							
 						case "string":
-							json.put(p.getParameterName(), "\" OR 'a'='a");
+							json.put(p.getParameterName(), "testKPh");
+							break;
+						case "array":
+							json.put(p.getParameterName(), new JSONArray());
 							break;
 							
 						default:
 							//json.put(p.getParameterName(), "http://testkeke");
 							switch(p.getParameterName()){
-								//propre à l'api pet store
-							case "photoUrls":
-								json.put(p.getParameterName(), "http://testkeke");
-								break;
 							default:
 								break;
 							}
