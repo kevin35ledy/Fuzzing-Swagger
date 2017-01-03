@@ -55,13 +55,15 @@ public class Launcher {
 			List<Query> getRequests;
 			List<Query> postRequests;
 			List<Query> deleteRequests;
+			List<Query> putRequests;
 			//System.out.println("### PATH ### " + pa.getPathName() + "");			
 
 			//generate all requests on the path
 			getRequests = generateGetQuery(pa);
 			postRequests = generatePostQuery(pa);
 			deleteRequests = generateDeleteQuery(pa);
-
+			putRequests = generatePutQuery(pa);
+			
 			//execute requests
 			try {
 				for(Query q:getRequests){
@@ -78,6 +80,11 @@ public class Launcher {
 					System.out.println("\n\n\n\n\nDELETE REQUESTs\n");
 					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
 					responses.add(executeDeleteQuery(q));
+				}
+				for(Query q:putRequests){
+					System.out.println("\n\n\n\n\nPUT REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					responses.add(executePutQuery(q));
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -228,7 +235,7 @@ public class Launcher {
 		return requests;
 	}
 
-	//TODO
+	
 	/**
 	 * 
 	 * @param path
@@ -243,12 +250,12 @@ public class Launcher {
 		Operation put = path.getOperationOfType("PUT");
 		if(put != null){
 			List<Parameter> parameters = put.getOperationParameters();
-			
+			JSONObject json = new JSONObject();
 			String description = put.getOperationDescription();
 			
 			for(Parameter p : parameters){
 				
-				if(p.getParameterLocation() != null & p.getParameterLocation().equals("path")){
+				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
 					switch (p.getParameterType()){
 					case "integer":
 						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
@@ -263,12 +270,103 @@ public class Launcher {
 						break;
 				}
 				}
+				
+				if(p.getParameterLocation() != null && p.getParameterLocation().equals("body")){
+					switch (p.getParameterType()){
+					case "integer":
+						Random random=new Random();
+						int randomNumber=(random.nextInt(65536));
+						json.put("id", randomNumber);
+						break;
+						
+					case "string":
+						
+						String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=:;,-_)({}[]'\"~@";
+						Random random2=new Random();
+						StringBuffer buffer = new StringBuffer();
+						for (int i = 0; i < 10; i++) {
+							int num = random2.nextInt(79);
+							buffer.append(str.charAt(num));
+						}
+						
+						json.put(p.getParameterName(), buffer.toString());
+						break;
+					case "array":
+						json.put(p.getParameterName(), new JSONArray());
+						break;
+						
+					default:
+						//json.put(p.getParameterName(), "http://testkeke");
+						switch(p.getParameterName()){
+						default:
+							break;
+						}
+						break;
+					}
+				}
 			}
 			
 			Query query = new Query("PUT", urlToTest, "Test: " + description, put);
 			requests.add(query);
 		}
 		return requests;
+	}
+	
+	
+	/**
+	 * 
+	 * executes all put requests
+	 * @param q query
+	 * @return a reponse html
+	 */
+	private static Response executePutQuery(Query q) {
+		
+		Response response = new Response(q);
+		response.setExpectedResult(q.getOp().getOperationResponses());
+		
+		try {
+			HttpURLConnection connection = (HttpURLConnection) ((new URL(q.getUrl()).openConnection()));
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setRequestMethod("PUT");
+			connection.connect();
+	
+			
+			
+			//get headers fields
+			Map<String, List<String>> headers = connection.getHeaderFields();
+
+			response.setResponseCode(connection.getResponseCode());
+
+			InputStream err = connection.getInputStream();
+			int c;
+			StringBuilder sb1 = new StringBuilder();
+			while(err!=null && (c = err.read()) != -1){
+				sb1.append((char)c);
+			}
+			response.setError(sb1.toString());
+
+
+			response.setHeaders(headers);
+
+			InputStream in = connection.getInputStream();
+
+			int ch;
+			StringBuilder sb = new StringBuilder();
+			while((ch = in.read()) != -1){
+				sb.append((char)ch);
+			}
+
+			//get response content
+			response.setContent(sb.toString()+"\n\n");
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
 	}
 	
 	/**
@@ -290,7 +388,7 @@ public class Launcher {
 			
 			for(Parameter p : parameters){
 				
-				if(p.getParameterLocation() != null & p.getParameterLocation().equals("path")){
+				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
 					switch (p.getParameterType()){
 					case "integer":
 						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
