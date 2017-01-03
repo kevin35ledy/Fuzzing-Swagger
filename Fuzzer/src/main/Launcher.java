@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.json.JSONObject;
 
 import io.swagger.models.HttpMethod;
 import model.Parameter;
@@ -34,7 +37,6 @@ import model.SwaggerResponse;
 
 public class Launcher {
 
-	//public final String urlBase = "https://twitter.com/";
 	public final static String urlBase = "http://petstore.swagger.io/v2";
 
 	public static void main(String[] args) {		
@@ -48,18 +50,26 @@ public class Launcher {
 
 		for(Path pa : qu.getApiPath()){
 
-			List<Query> requests;
+			List<Query> getRequests;
+			List<Query> postRequests;
 			//System.out.println("### PATH ### " + pa.getPathName() + "");			
 
 			//generate all requests on the path
-			requests = generateQuery(pa );
+			getRequests = generateGetQuery(pa);
+			postRequests = generatePostQuery(pa);
 
 
 			//execute requests
 			try {
-				for(Query q:requests){
+				for(Query q:getRequests){
 					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n\n");
-					responses.add(executeQuery(q));
+					responses.add(executeGetQuery(q));
+				}
+				for(Query q:postRequests){
+					System.out.println("\n\n\n\n\nPOST REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					System.out.println(q.getJson().toString());
+					responses.add(executePostQuery(q));
 				}
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -71,11 +81,12 @@ public class Launcher {
 			//write in a csv file responses
 			try{
 				PrintWriter writer = new PrintWriter("responses.csv", "UTF-8");
-				writer.println("Url tested, Expected code, Description, Received code, Test passed, Comments");
+				writer.println("Type, Url tested, Expected code, Description, Received code, Test passed, Comments");
 				
 				//traitement des réponses recues
 				for(Response response : responses){
 					String line = "";
+					line+= StringEscapeUtils.escapeJava(response.getQuery().getType())+",";
 					line+= StringEscapeUtils.escapeJava(response.getQuery().getUrl().replace(",", "VIRGULE"))+",";
 					line+= StringEscapeUtils.escapeJava(response.stringifyExpectedResult())+",";
 					line+= StringEscapeUtils.escapeJava(response.stringifyExpectedResultDescription().replace(";", ". "))+",";
@@ -98,6 +109,7 @@ public class Launcher {
 
 	} //end main
 	
+
 	/**
 	 * Check response code 
 	 * @return a string (if the response code corresponds to the expected response code)
@@ -124,18 +136,17 @@ public class Launcher {
 	 * @param path
 	 * @return a list of Query or request with description of the test
 	 */
-	public static List<Query> generateQuery(Path path){
+	public static List<Query> generateGetQuery(Path path){
 
 		System.out.println("Path : "+path.getPathName());
 		List<Query> requests = new ArrayList<Query>();
 
-
-		Operation get = path.getOperationOfType("GET");
-		
-	
-
 		String urlToTest = urlBase+path.getPathName();
-
+		
+		//////////
+		///GET////
+		//////////
+		Operation get = path.getOperationOfType("GET");
 		if(get != null){
 
 			List<Parameter> params = get.getOperationParameters();
@@ -188,21 +199,157 @@ public class Launcher {
 				//parametre non requis, tester la viabilite du path
 				else{
 					//check if 404
-					requests.add(new Query(urlToTest, "Test: " + description, get));
+					requests.add(new Query("GET",urlToTest, "Test: " + description, get));
 				}
 
 
 			}
 		}
-
-
+		
+		
+		
 
 		System.out.println("\n");
 		return requests;
 	}
 
 
+	
+	/**
+	 * 
+	 * @param path
+	 * @return a list of Query or request with description of the test
+	 */
+	public static List<Query> generatePostQuery(Path path){
+		List<Query> requests = new ArrayList<Query>();
+		
+		String urlToTest = urlBase+path.getPathName();
+		
+		/////////
+		//POST///
+		/////////
+		Operation post = path.getOperationOfType("POST");
+		if(post != null){
+			
+			List<Parameter> params = post.getOperationParameters();
+			JSONObject json = new JSONObject();
+			
+			for(Parameter p: params){
+				
+				String description = post.getOperationDescription();
 
+				//si parametre requis dans l'url ex: /pet/{petId}
+				//if(p.isParameterRequired()){
+				if(p != null && p.getParameterLocation() != null){
+					
+					if(p.getParameterLocation().equals("path")){
+						System.out.println("path");
+						switch (p.getParameterType()){
+							case "integer":
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
+								break;
+	
+							case "string":
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "2");
+								break;
+								
+							default:
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
+								break;
+						}
+					}
+					//json
+					if (p.getParameterLocation().equals("body")){
+						System.out.println("body");
+						switch (p.getParameterType()){
+							case "integer":
+								json.put("id", 1);
+								break;
+	
+							case "string":
+								json.put("name", "test");
+								break;
+								
+							default:
+								json.put(p.getParameterName(), "NULL");
+								break;
+						}
+					}
+					
+					
+				}
+				Query query = new Query("POST", urlToTest, "Test: " + description, post);
+				query.setJson(json);
+				requests.add(query);
+				
+			}
+		}
+		
+		return requests;
+	}
+	
+	/**
+	 * 
+	 * executes all post requests
+	 * @param q query
+	 * @return a reponse html
+	 */
+	private static Response executePostQuery(Query q) {
+		
+		Response response = new Response(q);
+		response.setExpectedResult(q.getOp().getOperationResponses());
+		
+		try {
+			HttpURLConnection connection = (HttpURLConnection) ((new URL(q.getUrl()).openConnection()));
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setRequestMethod("POST");
+			connection.connect();
+	
+			byte[] outputBytes = q.getJson().toString().getBytes("UTF-8");
+			OutputStream os = connection.getOutputStream();
+			
+				os.write(outputBytes);
+			
+	
+			os.close();
+			
+			
+			//get headers fields
+			Map<String, List<String>> headers = connection.getHeaderFields();
+
+			response.setResponseCode(connection.getResponseCode());
+
+			InputStream err = connection.getInputStream();
+			int c;
+			StringBuilder sb1 = new StringBuilder();
+			while(err!=null && (c = err.read()) != -1){
+				sb1.append((char)c);
+			}
+			response.setError(sb1.toString());
+
+
+			response.setHeaders(headers);
+
+			InputStream in = connection.getInputStream();
+
+			int ch;
+			StringBuilder sb = new StringBuilder();
+			while((ch = in.read()) != -1){
+				sb.append((char)ch);
+			}
+
+			//get response content
+			response.setContent(sb.toString()+"\n\n");
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
+	}
 
 
 
@@ -216,8 +363,7 @@ public class Launcher {
 	 * @throws MalformedURLException
 	 */
 
-	public static Response executeQuery(Query q) throws MalformedURLException{
-		String res = "";
+	public static Response executeGetQuery(Query q) throws MalformedURLException{
 		Response response = new Response(q);
 		response.setExpectedResult(q.getOp().getOperationResponses());
 
@@ -256,7 +402,6 @@ public class Launcher {
 
 			//get response content
 			response.setContent(sb.toString()+"\n\n");
-			res+= sb.toString()+"\n\n";
 
 		}catch(Exception e){
 			//System.err.println(e);
@@ -272,14 +417,20 @@ public class Launcher {
 	/////////////////////////////
 	///TEST GENERATOR////////////
 	/////////////////////////////
-
-
+	
+	/**
+	 * 
+	 */
+	public static Query postQuery(){
+		return null;
+	}
+	
 	/**
 	 * generate query with a parameter integer expected and no value given
 	 */
 	public static Query empty(String url, Parameter p, String opDescription, Operation op){
 		String uempty = url.replaceFirst("\\{"+p.getParameterName()+"\\}", "");
-		Query qempty = new Query(uempty,"Test : param int expected is empty\n"+opDescription, op);
+		Query qempty = new Query("GET",uempty,"Test : param int expected is empty\n"+opDescription, op);
 		return qempty;
 	}
 
@@ -288,7 +439,7 @@ public class Launcher {
 	 */
 	public static Query intZero(String url, Parameter p, String opDescription, Operation op){
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", "0");
-		Query q = new Query(u,"Test : param int expected = 0\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param int expected = 0\n"+opDescription, op);
 		return q;
 	}
 
@@ -299,7 +450,7 @@ public class Launcher {
 		Random random=new Random();
 		int randomNumber=(random.nextInt(65536)-32768);
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", randomNumber+"");
-		Query q = new Query(u,"Test : param int expected and value given is negative\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param int expected and value given is negative\n"+opDescription, op);
 		return q;
 	}
 
@@ -315,7 +466,7 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param int expected and value given is  a sequence of character\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param int expected and value given is  a sequence of character\n"+opDescription, op);
 		return q;
 	}
 
@@ -331,7 +482,7 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param integer expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param integer expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
 		return q;
 	}
 
@@ -347,7 +498,7 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param string expected and value given is  an integer\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param string expected and value given is  an integer\n"+opDescription, op);
 		return q;
 	}
 
@@ -363,7 +514,7 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
+		Query q = new Query("GET",u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
 
 		return q;
 	}
