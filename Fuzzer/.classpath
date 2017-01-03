@@ -12,5 +12,7 @@
 	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-core-1.5.10.jar"/>
 	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-models-1.5.10.jar"/>
 	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-parser-1.0.23.jar"/>
+	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/httpmime-4.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

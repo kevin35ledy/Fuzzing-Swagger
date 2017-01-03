@@ -52,6 +52,7 @@ public class JsonParser {
 		try {
 			swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
 			
+			
 			root = new ObjectMapper().readTree(new URL("http://petstore.swagger.io/v2/swagger.json"));
 	
 		} catch (Exception e) {

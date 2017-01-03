@@ -1,5 +1,8 @@
 package model;
 
+import org.apache.http.entity.mime.MultipartEntity;
+import org.json.JSONObject;
+
 
 /**
  * 
@@ -14,14 +17,26 @@ public class Query {
 	private String url;
 	private String queryDescription;
 	private Operation op;
+	private JSONObject json;
+	private String type;
 
 	
-	public Query(String url, String queryDescription, Operation op){
+	public Query(String type, String url, String queryDescription, Operation op){
 		this.url = url;
 		this.queryDescription = queryDescription;
 		this.op = op;
+		this.json = null;
+		this.type = type;
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Operation getOp(){
 		return this.op;
 	}
@@ -40,6 +55,18 @@ public class Query {
 
 	public void setQueryDescription(String queryDescription) {
 		this.queryDescription = queryDescription;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
+	}
+
+	public void setOp(Operation op) {
+		this.op = op;
 	}
 
 	@Override
