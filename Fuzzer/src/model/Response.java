@@ -21,6 +21,7 @@ public class Response {
 	private String content; 
 	private int responseCode;
 	private String error;
+	private String isPassed;
 	
 	public Response(Query query){
 		this.query = query;
@@ -28,6 +29,7 @@ public class Response {
 		this.content="";
 		this.responseCode=-1;
 		this.error = "";
+		this.isPassed = "";
 	}
 	
 	//GETTERS AND SETTERS
