@@ -1,6 +1,8 @@
 package test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -8,7 +10,9 @@ import org.junit.Test;
 
 import io.swagger.models.Operation;
 import io.swagger.models.Response;
+import io.swagger.models.Swagger;
 import main.JsonParser;
+import model.Parameter;
 import model.SwaggerResponse;
 
 public class TestModel {
@@ -51,9 +55,24 @@ public class TestModel {
 		}
 	}
 	
+	/** getParametersFromOperation function test**/
 	@Test
-	public void test3(){
+	public void getParametersFromOperationTest1(){
+		List<io.swagger.models.parameters.Parameter> parameters = new ArrayList<io.swagger.models.parameters.Parameter>();
+		Operation op1 = new Operation();
 		
+		for(int i = 0; i < 100; i++){
+			io.swagger.models.parameters.PathParameter param = new io.swagger.models.parameters.PathParameter();
+			param.setName("Param1");
+			parameters.add(i, param);
+		}
+		op1.setParameters(parameters);
+		Swagger swagger = JsonParser.getJson();
+		
+		
+		List<Parameter> l1 = JsonParser.getParametersFromOperation(swagger, op1);
+		
+		Assert.assertEquals(l1.size(), parameters.size());
 	}
 
 }

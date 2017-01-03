@@ -62,7 +62,7 @@ public class JsonParser {
 	
 	/**
 	 * Get the $ref field's value of parameters
-	 * @return
+	 *	 @return
 	 */
 	public static Model getDefinitionReference(Swagger swagger, Operation op, String ref){
 		Map<String, Model> map = swagger.getDefinitions();
@@ -148,6 +148,9 @@ public class JsonParser {
 			}
 			//BODY TYPE
 			if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
+				name = paramSwag.getName();
+				location="body";
+				required = paramSwag.getRequired();
 				String ref = ((io.swagger.models.parameters.BodyParameter) paramSwag).getSchema().getReference();
 				ref = StringUtils.substringAfter(ref, "#/definitions/");
 				//System.out.println("Reference = " + ref);
