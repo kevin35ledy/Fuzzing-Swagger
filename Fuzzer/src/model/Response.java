@@ -21,6 +21,7 @@ public class Response {
 	private String content; 
 	private int responseCode;
 	private String error;
+	private String isPassed;
 	private Map<String, SwaggerResponse> expectedResult;
 	
 
@@ -30,6 +31,7 @@ public class Response {
 		this.content="";
 		this.responseCode=-1;
 		this.error = "";
+		this.isPassed = "";
 		this.expectedResult = null;
 	}
 	

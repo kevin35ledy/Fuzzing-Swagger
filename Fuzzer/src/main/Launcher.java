@@ -86,6 +86,24 @@ public class Launcher {
 		}
 
 
+	} //end main
+	
+	/**
+	 * Check response code 
+	 * @return a string (if the response code corresponds to the expected response code)
+	 */
+	public static String checkResponseCode(Response resp){
+		String res = "";
+		String expectedRespondeCode = "";
+		try {
+			expectedRespondeCode = Integer.toString(resp.getResponseCode());			
+		} catch (Exception e) {
+			
+		}
+		
+		
+		
+		return res;
 	}
 
 
@@ -101,6 +119,8 @@ public class Launcher {
 
 
 		Operation get = path.getOperationOfType("GET");
+		
+	
 
 		String urlToTest = urlBase+path.getPathName();
 
