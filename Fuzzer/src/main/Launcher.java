@@ -228,7 +228,49 @@ public class Launcher {
 		return requests;
 	}
 
+	//TODO
+	/**
+	 * 
+	 * @param path
+	 * @return a list of Query or request with description of the test
+	 */
+	public static List<Query> generatePutQuery(Path path){
+		List<Query> requests = new ArrayList<Query>();
+		
+		String urlToTest = urlBase+path.getPathName();
+		
+		///PUT////
+		Operation put = path.getOperationOfType("PUT");
+		if(put != null){
+			List<Parameter> parameters = put.getOperationParameters();
+			
+			String description = put.getOperationDescription();
+			
+			for(Parameter p : parameters){
+				
+				if(p.getParameterLocation() != null & p.getParameterLocation().equals("path")){
+					switch (p.getParameterType()){
+					case "integer":
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
+						break;
 
+					case "string":
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "2");
+						break;
+						
+					default:
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
+						break;
+				}
+				}
+			}
+			
+			Query query = new Query("PUT", urlToTest, "Test: " + description, put);
+			requests.add(query);
+		}
+		return requests;
+	}
+	
 	/**
 	 * 
 	 * @param path
@@ -378,11 +420,22 @@ public class Launcher {
 						
 						switch (p.getParameterType()){
 						case "integer":
-							json.put("id", 2000000000);
+							Random random=new Random();
+							int randomNumber=(random.nextInt(65536));
+							json.put("id", randomNumber);
 							break;
 							
 						case "string":
-							json.put(p.getParameterName(), "testKPh");
+							
+							String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=:;,-_)({}[]'\"~@";
+							Random random2=new Random();
+							StringBuffer buffer = new StringBuffer();
+							for (int i = 0; i < 10; i++) {
+								int num = random2.nextInt(79);
+								buffer.append(str.charAt(num));
+							}
+							
+							json.put(p.getParameterName(), buffer.toString());
 							break;
 						case "array":
 							json.put(p.getParameterName(), new JSONArray());
