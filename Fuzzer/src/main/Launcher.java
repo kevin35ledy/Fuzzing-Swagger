@@ -81,7 +81,7 @@ public class Launcher {
 			//write in a csv file responses
 			try{
 				PrintWriter writer = new PrintWriter("responses.csv", "UTF-8");
-				writer.println("Type, Url tested, Expected code, Description, Received code, Test passed, Comments");
+				writer.println("Type, Url tested, Expected code, Description, Received code, Test passed, Data posted, Comments");
 				
 				//traitement des réponses recues
 				for(Response response : responses){
@@ -92,6 +92,12 @@ public class Launcher {
 					line+= StringEscapeUtils.escapeJava(response.stringifyExpectedResultDescription().replace(";", ". "))+",";
 					line+= StringEscapeUtils.escapeJava(response.getResponseCode()+"")+",";
 					line+= StringEscapeUtils.escapeJava(checkResponseCode(response))+",";
+					if(response.getQuery().getJson() !=null){
+						line+= response.getQuery().getJson().toString().replace(",", " ")+",";
+					}
+					else{
+						line+=",";
+					}
 					line+= StringEscapeUtils.escapeJava(response.getError().replace(",", "").replace(";", ""));
 					
 					writer.println(line);
@@ -164,6 +170,7 @@ public class Launcher {
 						//check empty
 						requests.add(empty(urlToTest, p, description, get));
 						//check buffer overflow with length
+						requests.add(intBufferOver(urlToTest, p, description, 10, get));
 						requests.add(intBufferOver(urlToTest, p, description, 25, get));
 						requests.add(intBufferOver(urlToTest, p, description,100, get));
 						requests.add(intBufferOver(urlToTest, p, description,200, get));
@@ -234,15 +241,15 @@ public class Launcher {
 			List<Parameter> params = post.getOperationParameters();
 			JSONObject json = new JSONObject();
 			
+			String description = post.getOperationDescription();
 			for(Parameter p: params){
 				
-				String description = post.getOperationDescription();
 
 				//si parametre requis dans l'url ex: /pet/{petId}
 				//if(p.isParameterRequired()){
-				if(p != null && p.getParameterLocation() != null){
+				if(p != null){
 					
-					if(p.getParameterLocation().equals("path")){
+					if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
 						System.out.println("path");
 						switch (p.getParameterType()){
 							case "integer":
@@ -259,30 +266,40 @@ public class Launcher {
 						}
 					}
 					//json
-					if (p.getParameterLocation().equals("body")){
-						System.out.println("body");
+					//if ( p.getParameterLocation() != null && p.getParameterLocation().equals("body")){
+					//else{
+						
 						switch (p.getParameterType()){
-							case "integer":
-								json.put("id", 1);
+						case "integer":
+							json.put("id", 2000000000);
+							break;
+							
+						case "string":
+							json.put(p.getParameterName(), "\" OR 'a'='a");
+							break;
+							
+						default:
+							//json.put(p.getParameterName(), "http://testkeke");
+							switch(p.getParameterName()){
+								//propre à l'api pet store
+							case "photoUrls":
+								json.put(p.getParameterName(), "http://testkeke");
 								break;
-	
-							case "string":
-								json.put("name", "test");
-								break;
-								
 							default:
-								json.put(p.getParameterName(), "NULL");
 								break;
+							}
+							break;
 						}
-					}
+					//}
+					//}
 					
 					
 				}
-				Query query = new Query("POST", urlToTest, "Test: " + description, post);
-				query.setJson(json);
-				requests.add(query);
 				
 			}
+			Query query = new Query("POST", urlToTest, "Test: " + description, post);
+			query.setJson(json);
+			requests.add(query);
 		}
 		
 		return requests;

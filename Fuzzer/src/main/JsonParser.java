@@ -162,6 +162,7 @@ public class JsonParser {
 			}
 			else{
 				//TODO
+				location="body";
 			}
 			param.setParameterName(name);
 			param.setParameterType(type);
