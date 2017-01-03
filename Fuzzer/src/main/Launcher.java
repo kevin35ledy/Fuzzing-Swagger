@@ -388,23 +388,26 @@ public class Launcher {
 			
 			for(Parameter p : parameters){
 				
-				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
-					switch (p.getParameterType()){
-					case "integer":
-						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
-						break;
 
-					case "string":
-						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "2");
-						break;
-						
-					default:
-						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
-						break;
-				}
+				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
+					if(p.isParameterRequired()){
+						System.out.println("name : "+p.getParameterName());
+						switch (p.getParameterType()){
+						case "integer":
+							urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randInt(6)+"");
+							break;
+	
+						case "string":
+							urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randString(6));
+							break;
+							
+						default:
+							urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randString(20));
+							break;
+					}
+					}
 				}
 			}
-			
 			Query query = new Query("DELETE", urlToTest, "Test: " + description, delete);
 			requests.add(query);
 		}
@@ -460,7 +463,7 @@ public class Launcher {
 			response.setContent(sb.toString()+"\n\n");
 			
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -499,15 +502,15 @@ public class Launcher {
 						System.out.println("path");
 						switch (p.getParameterType()){
 							case "integer":
-								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", ""+randInt(6));
 								break;
 	
 							case "string":
-								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "2");
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randString(6));
 								break;
 								
 							default:
-								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
+								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randString(20));
 								break;
 						}
 					}
@@ -790,6 +793,29 @@ public class Launcher {
 		Query q = new Query("GET",u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
 
 		return q;
+	}
+	
+	
+	public static int randInt(int length){
+		String str = "123456789";
+		Random random=new Random();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			int num = random.nextInt(9);
+			buffer.append(str.charAt(num));
+		}
+		return Integer.parseInt(buffer.toString());
+	}
+	
+	public static String randString(int length){
+		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=:;,-_)({}[]'\"~@";
+		Random random=new Random();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < 10; i++) {
+			int num = random.nextInt(79);
+			buffer.append(str.charAt(num));
+		}
+		return buffer.toString();
 	}
 
 
