@@ -65,6 +65,7 @@ public class Launcher {
 			//check response TODO
 			for(Response response : responses){
 				System.out.println(response.toString());
+				//recuperer 
 			}
 
 		}
@@ -123,33 +124,33 @@ public class Launcher {
 					switch (p.getParameterType()){
 					case "integer":
 						//check empty
-						requests.add(empty(urlToTest, p, description));
+						requests.add(empty(urlToTest, p, description, get));
 						//check buffer overflow with length
-						requests.add(intBufferOver(urlToTest, p, description, 25));
-						requests.add(intBufferOver(urlToTest, p, description,100));
-						requests.add(intBufferOver(urlToTest, p, description,200));
-						requests.add(intBufferOver(urlToTest, p, description,500));
+						requests.add(intBufferOver(urlToTest, p, description, 25, get));
+						requests.add(intBufferOver(urlToTest, p, description,100, get));
+						requests.add(intBufferOver(urlToTest, p, description,200, get));
+						requests.add(intBufferOver(urlToTest, p, description,500, get));
 						//check string
-						requests.add(randomString(urlToTest, p, description));
+						requests.add(randomString(urlToTest, p, description, get));
 						//check 0 value
-						requests.add(intZero(urlToTest, p, description));
+						requests.add(intZero(urlToTest, p, description, get));
 						//check negatives value
-						requests.add(intNegVal(urlToTest, p, description));
+						requests.add(intNegVal(urlToTest, p, description, get));
 						break;
 
 					case "string":
 						//check empty string 
-						requests.add(empty(urlToTest, p, description));
+						requests.add(empty(urlToTest, p, description, get));
 						//check int
-						requests.add(strWithInt(urlToTest, p, description));
+						requests.add(strWithInt(urlToTest, p, description, get));
 						//check alea string carac speciaux
-						requests.add(randomString(urlToTest, p, description));
+						requests.add(randomString(urlToTest, p, description, get));
 						//check buffer overflow
-						requests.add(stringBufferOver(urlToTest, p, description,25));
-						requests.add(stringBufferOver(urlToTest, p, description,100));
-						requests.add(stringBufferOver(urlToTest, p, description,200));
-						requests.add(stringBufferOver(urlToTest, p, description,300));
-						requests.add(stringBufferOver(urlToTest, p, description,500));
+						requests.add(stringBufferOver(urlToTest, p, description,25, get));
+						requests.add(stringBufferOver(urlToTest, p, description,100, get));
+						requests.add(stringBufferOver(urlToTest, p, description,200, get));
+						requests.add(stringBufferOver(urlToTest, p, description,300, get));
+						requests.add(stringBufferOver(urlToTest, p, description,500, get));
 						break;
 					default:
 						System.out.println("type non reconnu");
@@ -160,7 +161,7 @@ public class Launcher {
 				//parametre non requis, tester la viabilite du path
 				else{
 					//check if 404
-					requests.add(new Query(urlToTest, "Test: " + description));
+					requests.add(new Query(urlToTest, "Test: " + description, get));
 				}
 
 
@@ -191,6 +192,7 @@ public class Launcher {
 	public static Response executeQuery(Query q) throws MalformedURLException{
 		String res = "";
 		Response response = new Response(q);
+		response.setExpectedResult(q.getOp().getOperationResponses());
 
 
 		//generate url 
@@ -248,36 +250,36 @@ public class Launcher {
 	/**
 	 * generate query with a parameter integer expected and no value given
 	 */
-	public static Query empty(String url, Parameter p, String opDescription){
+	public static Query empty(String url, Parameter p, String opDescription, Operation op){
 		String uempty = url.replaceFirst("\\{"+p.getParameterName()+"\\}", "");
-		Query qempty = new Query(uempty,"Test : param int expected is empty\n"+opDescription);
+		Query qempty = new Query(uempty,"Test : param int expected is empty\n"+opDescription, op);
 		return qempty;
 	}
 
 	/**
 	 * generate query with a parameter integer expected and value given is 0
 	 */
-	public static Query intZero(String url, Parameter p, String opDescription){
+	public static Query intZero(String url, Parameter p, String opDescription, Operation op){
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", "0");
-		Query q = new Query(u,"Test : param int expected = 0\n"+opDescription);
+		Query q = new Query(u,"Test : param int expected = 0\n"+opDescription, op);
 		return q;
 	}
 
 	/**
 	 * generate query with a parameter integer expected and value given is negative
 	 */
-	public static Query intNegVal(String url, Parameter p, String opDescription){
+	public static Query intNegVal(String url, Parameter p, String opDescription, Operation op){
 		Random random=new Random();
 		int randomNumber=(random.nextInt(65536)-32768);
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", randomNumber+"");
-		Query q = new Query(u,"Test : param int expected and value given is negative\n"+opDescription);
+		Query q = new Query(u,"Test : param int expected and value given is negative\n"+opDescription, op);
 		return q;
 	}
 
 	/**
 	 * generate query with a parameter expected and value given is a sequence of character
 	 */
-	public static Query randomString(String url, Parameter p, String opDescription){
+	public static Query randomString(String url, Parameter p, String opDescription, Operation op){
 		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+=:;,-_)({}[]'\"~@";
 		Random random=new Random();
 		StringBuffer buffer = new StringBuffer();
@@ -286,14 +288,14 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param int expected and value given is  a sequence of character\n"+opDescription);
+		Query q = new Query(u,"Test : param int expected and value given is  a sequence of character\n"+opDescription, op);
 		return q;
 	}
 
 	/**
 	 * generate query with a parameter integer expected and value given is a sequence of character
 	 */
-	public static Query intBufferOver(String url, Parameter p, String opDescription, int length){
+	public static Query intBufferOver(String url, Parameter p, String opDescription, int length, Operation op){
 		String str = "123456789";
 		Random random=new Random();
 		StringBuffer buffer = new StringBuffer();
@@ -302,14 +304,14 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param integer expected and value is given with the purpose to create a bufferoverflow\n"+opDescription);
+		Query q = new Query(u,"Test : param integer expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
 		return q;
 	}
 	
 	/**
 	 * generate query with a parameter string expected and value given is an integer
 	 */
-	public static Query strWithInt(String url, Parameter p, String opDescription){
+	public static Query strWithInt(String url, Parameter p, String opDescription, Operation op){
 		String str = "123456789";
 		Random random=new Random();
 		StringBuffer buffer = new StringBuffer();
@@ -318,14 +320,14 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param string expected and value given is  an integer\n"+opDescription);
+		Query q = new Query(u,"Test : param string expected and value given is  an integer\n"+opDescription, op);
 		return q;
 	}
 	
 	/**
 	 * generate query with the purpose to create a bufferoverflow
 	 */
-	public static Query stringBufferOver(String url, Parameter p, String opDescription, int length){
+	public static Query stringBufferOver(String url, Parameter p, String opDescription, int length, Operation op){
 		String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		Random random=new Random();
 		StringBuffer buffer = new StringBuffer();
@@ -334,7 +336,8 @@ public class Launcher {
 			buffer.append(str.charAt(num));
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
-		Query q = new Query(u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription);
+		Query q = new Query(u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
+		
 		return q;
 	}
 
