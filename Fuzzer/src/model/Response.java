@@ -1,9 +1,12 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 
 
 /**
@@ -23,7 +26,7 @@ public class Response {
 	private String error;
 	private String isPassed;
 	private Map<String, SwaggerResponse> expectedResult;
-	
+
 
 	public Response(Query query){
 		this.query = query;
@@ -34,16 +37,42 @@ public class Response {
 		this.isPassed = "";
 		this.expectedResult = null;
 	}
-	
+
 	//GETTERS AND SETTERS
 	public Map<String, SwaggerResponse> getExpectedResult() {
 		return expectedResult;
 	}
-	
+
+	public String stringifyExpectedResult(){
+
+		String res = "";
+		Set<String> set = expectedResult.keySet();
+		Iterator<String> it = set.iterator();
+		while(it.hasNext()){
+			res+=(it.next().replace(",", "VIRGULE"))+"__";
+		}
+
+		return res;
+	}
+
+	public String stringifyExpectedResultDescription(){
+
+		String res = "";
+		Iterator<SwaggerResponse> it = expectedResult.values().iterator();
+		while(it.hasNext()){
+			SwaggerResponse sr = it.next();
+			sr.getResponseDescription();
+			res+=StringEscapeUtils.escapeJava(sr.getResponseDescription())+"; ";
+		}
+
+		return res;
+	}
+
+
 	public void setExpectedResult(Map<String, SwaggerResponse> expectedResult) {
 		this.expectedResult = expectedResult;
 	}
-	
+
 	public String getError() {
 		return error;
 	}
@@ -89,26 +118,26 @@ public class Response {
 
 	public String headersToString(){
 		StringBuilder sb = new StringBuilder();
-		
+
 		Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
-        for (Map.Entry<String, List<String>> entry : entrySet) {
-            String headerName = entry.getKey();
-            sb.append("Header Name:" + headerName);
-            List<String> headerValues = entry.getValue();
-            for (String value : headerValues) {
-            	sb.append("Header value:" + value);
-            }
-        }
-        
-        
-        return sb.toString();
+		for (Map.Entry<String, List<String>> entry : entrySet) {
+			String headerName = entry.getKey();
+			sb.append("Header Name:" + headerName);
+			List<String> headerValues = entry.getValue();
+			for (String value : headerValues) {
+				sb.append("Header value:" + value);
+			}
+		}
+
+
+		return sb.toString();
 	}
-	
-	
+
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("---------------------\n");
 		sb.append(this.query.getQueryDescription()+"\n");
 		sb.append("---------------------\n");
@@ -118,9 +147,9 @@ public class Response {
 		sb.append("---------------------\n");
 		sb.append(this.error+"\n");
 		sb.append("---------------------\n\n\n\n\n");
-		
+
 		return sb.toString();
 	}
-	
-	
+
+
 }

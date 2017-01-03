@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import io.swagger.models.HttpMethod;
 import model.Parameter;
 import model.Operation;
@@ -69,15 +71,17 @@ public class Launcher {
 			//write in a csv file responses
 			try{
 				PrintWriter writer = new PrintWriter("responses.csv", "UTF-8");
-				writer.println("Url tested, Expected code, Received code, Test passed, Comments");
+				writer.println("Url tested, Expected code, Description, Received code, Test passed, Comments");
 				
 				//traitement des réponses recues
 				for(Response response : responses){
 					String line = "";
-					line+= response.getQuery().getUrl()+",";
-					line+= checkResponseCode(response)+",";
-					line+= response.getResponseCode()+",";
-					line+= response.getError();
+					line+= StringEscapeUtils.escapeJava(response.getQuery().getUrl().replace(",", "VIRGULE"))+",";
+					line+= StringEscapeUtils.escapeJava(response.stringifyExpectedResult())+",";
+					line+= StringEscapeUtils.escapeJava(response.stringifyExpectedResultDescription().replace(";", ". "))+",";
+					line+= StringEscapeUtils.escapeJava(response.getResponseCode()+"")+",";
+					line+= StringEscapeUtils.escapeJava(checkResponseCode(response))+",";
+					line+= StringEscapeUtils.escapeJava(response.getError().replace(",", "").replace(";", ""));
 					
 					writer.println(line);
 					
@@ -88,8 +92,6 @@ public class Launcher {
 				// do something
 
 			}
-
-			
 
 		}
 
