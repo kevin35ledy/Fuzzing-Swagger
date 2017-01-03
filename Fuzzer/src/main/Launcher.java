@@ -66,16 +66,20 @@ public class Launcher {
 			//write in a csv file responses
 			try{
 				PrintWriter writer = new PrintWriter("responses.csv", "UTF-8");
-				writer.println("Url tested, Expected code, Received code, Test passed, comment");
+				writer.println("Url tested, Expected code, Received code, Test passed, Comments");
 				
-				StringBuilder sb = new StringBuilder();
 				//traitement des réponses recues
 				for(Response response : responses){
-					//response.
+					String line = "";
+					line+= response.getQuery().getUrl()+",";
+					line+= checkResponseCode(response)+",";
+					line+= response.getResponseCode()+",";
+					line+= response.getError();
+					
+					writer.println(line);
+					
 				}
 				
-				
-				writer.println("The second line");
 				writer.close();
 			} catch (IOException e) {
 				// do something
