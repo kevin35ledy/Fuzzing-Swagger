@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import io.swagger.models.HttpMethod;
 import model.Parameter;
 import model.Operation;
 import model.Path;
 import model.Query;
 import model.ApiPaths;
 import model.Response;
+import model.SwaggerResponse;
 
 /**
  * 
@@ -62,6 +64,7 @@ public class Launcher {
 				e.printStackTrace();
 			}
 
+			
 
 			//write in a csv file responses
 			try{
@@ -83,6 +86,7 @@ public class Launcher {
 				writer.close();
 			} catch (IOException e) {
 				// do something
+
 			}
 
 			
@@ -97,16 +101,18 @@ public class Launcher {
 	 * @return a string (if the response code corresponds to the expected response code)
 	 */
 	public static String checkResponseCode(Response resp){
-		String res = "";
+		String res = "WARNING !";
 		String expectedRespondeCode = "";
 		try {
 			expectedRespondeCode = Integer.toString(resp.getResponseCode());			
 		} catch (Exception e) {
 			
 		}
-		
-		
-		
+		for(Map.Entry<String, SwaggerResponse> swag : resp.getExpectedResult().entrySet()){
+			if(swag.getKey().equals(expectedRespondeCode)){
+				res="OK";
+			}
+		}
 		return res;
 	}
 

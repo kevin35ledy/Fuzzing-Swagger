@@ -2,15 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/jackson-annotations-2.8.5.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/jackson-core-2.8.5.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/jackson-databind-2.8.5.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/jackson-dataformat-yaml-2.8.5.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/json-20160810.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/slf4j-api-1.7.21.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-core-1.5.10.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-models-1.5.10.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/swagger-parser-1.0.23.jar"/>
-	<classpathentry kind="lib" path="/Users/kevinledy/Documents/Kevin/ESIR/Esir3/VV/jars/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/jackson-annotations-2.8.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/jackson-databind-2.8.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/jackson-dataformat-yaml-2.8.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/jackson-core-2.8.5.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/swagger-core-1.5.10.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/json-20160810.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/swagger-models-1.5.10.jar"/>
+	<classpathentry kind="lib" path="/home/pcollin/Téléchargements/swagger-parser-1.0.23.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
