@@ -52,12 +52,13 @@ public class Launcher {
 
 			List<Query> getRequests;
 			List<Query> postRequests;
+			List<Query> deleteRequests;
 			//System.out.println("### PATH ### " + pa.getPathName() + "");			
 
 			//generate all requests on the path
 			getRequests = generateGetQuery(pa);
 			postRequests = generatePostQuery(pa);
-
+			deleteRequests = generateDeleteQuery(pa);
 
 			//execute requests
 			try {
@@ -71,6 +72,7 @@ public class Launcher {
 					System.out.println(q.getJson().toString());
 					responses.add(executePostQuery(q));
 				}
+				for(Query q:)
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -221,6 +223,104 @@ public class Launcher {
 	}
 
 
+	/**
+	 * 
+	 * @param path
+	 * @return a list of Query or request with description of the test
+	 */
+	public static List<Query> generateDeleteQuery(Path path){
+		List<Query> requests = new ArrayList<Query>();
+		
+		String urlToTest = urlBase+path.getPathName();
+		
+		///DELETE////
+		Operation delete = path.getOperationOfType("DELETE");
+		if(delete != null){
+			List<Parameter> parameters = delete.getOperationParameters();
+			
+			String description = delete.getOperationDescription();
+			
+			for(Parameter p : parameters){
+				
+				if(p.getParameterLocation() != null & p.getParameterLocation().equals("path")){
+					switch (p.getParameterType()){
+					case "integer":
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "1");
+						break;
+
+					case "string":
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "2");
+						break;
+						
+					default:
+						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
+						break;
+				}
+				}
+			}
+			
+			Query query = new Query("DELETE", urlToTest, "Test: " + description, delete);
+			requests.add(query);
+		}
+		return requests;
+	}
+	
+	/**
+	 * 
+	 * executes all delete requests
+	 * @param q query
+	 * @return a reponse html
+	 */
+	private static Response executeDeleteQuery(Query q) {
+		
+		Response response = new Response(q);
+		response.setExpectedResult(q.getOp().getOperationResponses());
+		
+		try {
+			HttpURLConnection connection = (HttpURLConnection) ((new URL(q.getUrl()).openConnection()));
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setRequestMethod("DELETE");
+			connection.connect();
+	
+			
+			
+			//get headers fields
+			Map<String, List<String>> headers = connection.getHeaderFields();
+
+			response.setResponseCode(connection.getResponseCode());
+
+			InputStream err = connection.getInputStream();
+			int c;
+			StringBuilder sb1 = new StringBuilder();
+			while(err!=null && (c = err.read()) != -1){
+				sb1.append((char)c);
+			}
+			response.setError(sb1.toString());
+
+
+			response.setHeaders(headers);
+
+			InputStream in = connection.getInputStream();
+
+			int ch;
+			StringBuilder sb = new StringBuilder();
+			while((ch = in.read()) != -1){
+				sb.append((char)ch);
+			}
+
+			//get response content
+			response.setContent(sb.toString()+"\n\n");
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
+		}
+	
 	
 	/**
 	 * 
