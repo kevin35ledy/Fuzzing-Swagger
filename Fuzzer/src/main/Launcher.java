@@ -1,6 +1,9 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +38,7 @@ public class Launcher {
 	public static void main(String[] args) {		
 		//Step 1
 		ApiPaths qu = JsonParser.modelBuilding();
-		
+
 		System.out.println("############ VISULATION DE L'OBJET CREE A PARTIR DE JSON PARSER ###########################");
 		System.out.println(qu.toString());
 		System.out.println("##################  FIN VISUALISATION  #####################");
@@ -47,7 +50,7 @@ public class Launcher {
 			//System.out.println("### PATH ### " + pa.getPathName() + "");			
 
 			//generate all requests on the path
-			requests = generateQuery(pa);
+			requests = generateQuery(pa );
 
 
 			//execute requests
@@ -61,14 +64,28 @@ public class Launcher {
 				e.printStackTrace();
 			}
 
+			
 
-
-
-			//check response TODO
-			for(Response response : responses){
-				System.out.println(response.toString());
+			//write in a csv file responses
+			try{
+				PrintWriter writer = new PrintWriter("responses.csv", "UTF-8");
+				writer.println("Url tested, Expected code, Received code, Test passed, comment");
 				
+				StringBuilder sb = new StringBuilder();
+				//traitement des réponses recues
+				for(Response response : responses){
+					//response.
+				}
+				
+				
+				writer.println("The second line");
+				writer.close();
+			} catch (IOException e) {
+				// do something
+
 			}
+
+			
 
 		}
 
@@ -120,7 +137,7 @@ public class Launcher {
 
 				//System.out.println("name : " + p.getParameterName() + ", required: "+p.isParameterRequired()+", type: "+p.getParameterType()+", desc: "+get.getOperationDescription());
 				String description = get.getOperationDescription();
-				
+
 				//si parametre requis dans l'url ex: /pet/{petId}
 				if(p.isParameterRequired()){
 
@@ -209,9 +226,9 @@ public class Launcher {
 
 			//get headers fields
 			Map<String, List<String>> headers = connection.getHeaderFields();
-			
+
 			response.setResponseCode(connection.getResponseCode());
-			
+
 			InputStream err = connection.getErrorStream();
 			int c;
 			StringBuilder sb1 = new StringBuilder();
@@ -219,8 +236,8 @@ public class Launcher {
 				sb1.append((char)c);
 			}
 			response.setError(sb1.toString());
-			
-			
+
+
 			response.setHeaders(headers);
 
 			InputStream in = connection.getInputStream();
@@ -311,7 +328,7 @@ public class Launcher {
 		Query q = new Query(u,"Test : param integer expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
 		return q;
 	}
-	
+
 	/**
 	 * generate query with a parameter string expected and value given is an integer
 	 */
@@ -327,7 +344,7 @@ public class Launcher {
 		Query q = new Query(u,"Test : param string expected and value given is  an integer\n"+opDescription, op);
 		return q;
 	}
-	
+
 	/**
 	 * generate query with the purpose to create a bufferoverflow
 	 */
@@ -341,7 +358,7 @@ public class Launcher {
 		}
 		String u = url.replaceFirst("\\{"+p.getParameterName()+"\\}", buffer.toString());
 		Query q = new Query(u,"Test : param string expected and value is given with the purpose to create a bufferoverflow\n"+opDescription, op);
-		
+
 		return q;
 	}
 
