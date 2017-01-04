@@ -130,6 +130,7 @@ public class JsonParser {
 			Parameter param = new Parameter();
 
 			//PARAMETER TYPE
+			//System.out.println("name json : " + paramSwag.getName());
 			if(paramSwag instanceof io.swagger.models.parameters.PathParameter){
 				name = paramSwag.getName();
 				location = "path";
@@ -148,7 +149,7 @@ public class JsonParser {
 				}
 			}
 			//BODY TYPE
-			if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
+			else if(paramSwag instanceof io.swagger.models.parameters.BodyParameter){
 				name = paramSwag.getName();
 				location="body";
 				required = paramSwag.getRequired();
@@ -162,7 +163,9 @@ public class JsonParser {
 			}
 			else{
 				//TODO
-				location="body";
+				location=paramSwag.getIn();
+				name = paramSwag.getName();
+				required = paramSwag.getRequired();
 			}
 			param.setParameterName(name);
 			param.setParameterType(type);
