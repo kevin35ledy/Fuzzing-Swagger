@@ -56,6 +56,9 @@ public class Launcher {
 			List<Query> postRequests;
 			List<Query> deleteRequests;
 			List<Query> putRequests;
+			List<Query> post1Requests;
+			List<Query> delete1Requests;
+			List<Query> put1Requests;
 			//System.out.println("### PATH ### " + pa.getPathName() + "");			
 
 			//generate all requests on the path
@@ -63,6 +66,9 @@ public class Launcher {
 			postRequests = generatePostQuery(pa);
 			deleteRequests = generateDeleteQuery(pa);
 			putRequests = generatePutQuery(pa);
+			post1Requests = generatePostQuery(pa);
+			delete1Requests = generateDeleteQuery(pa);
+			put1Requests = generatePutQuery(pa);
 			
 			//execute requests
 			try {
@@ -81,7 +87,23 @@ public class Launcher {
 					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
 					responses.add(executeDeleteQuery(q));
 				}
-				for(Query q:putRequests){
+				for(Query q:put1Requests){
+					System.out.println("\n\n\n\n\nPUT REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					responses.add(executePutQuery(q));
+				}
+				for(Query q:post1Requests){
+					System.out.println("\n\n\n\n\nPOST REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					System.out.println(q.getJson().toString());
+					responses.add(executePostQuery(q));
+				}
+				for(Query q:delete1Requests){
+					System.out.println("\n\n\n\n\nDELETE REQUESTs\n");
+					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
+					responses.add(executeDeleteQuery(q));
+				}
+				for(Query q:put1Requests){
 					System.out.println("\n\n\n\n\nPUT REQUESTs\n");
 					System.out.println(q.getUrl()+"\n"+q.getQueryDescription()+"\n");
 					responses.add(executePutQuery(q));
@@ -270,7 +292,7 @@ public class Launcher {
 						break;
 					}
 				}
-				
+				urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randString(7));
 				//else if(p.getParameterLocation() != null && p.getParameterLocation().equals("body")){
 					switch (p.getParameterType()){
 					case "integer":
@@ -393,7 +415,7 @@ public class Launcher {
 
 				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
 					if(p.isParameterRequired()){
-						System.out.println("name : "+p.getParameterName());
+						//System.out.println("name : "+p.getParameterName());
 						switch (p.getParameterType()){
 						case "integer":
 							urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", randInt(6)+"");
@@ -501,7 +523,7 @@ public class Launcher {
 				if(p != null){
 					
 					if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
-						System.out.println("path");
+						
 						switch (p.getParameterType()){
 							case "integer":
 								urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", ""+randInt(6));

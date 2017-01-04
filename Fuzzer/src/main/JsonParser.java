@@ -138,7 +138,7 @@ public class JsonParser {
 				required = paramSwag.getRequired();
 			}
 			//QUERY TYPE
-			if(paramSwag instanceof io.swagger.models.parameters.QueryParameter){
+			else if(paramSwag instanceof io.swagger.models.parameters.QueryParameter){
 				name = paramSwag.getName();
 				location = "query";
 				required = paramSwag.getRequired();
@@ -166,6 +166,12 @@ public class JsonParser {
 				location=paramSwag.getIn();
 				name = paramSwag.getName();
 				required = paramSwag.getRequired();
+				//String ref = ((io.swagger.models.parameters.BodyParameter) paramSwag).getSchema().getReference();
+				//ref = StringUtils.substringAfter(ref, "#/definitions/");
+				//System.out.println("Reference = " + ref);
+				//get the model corresponding to the reference
+				//Model mod = getDefinitionReference(swagger, op, ref);
+				//return getParametersFromDefinition(mod, ref);
 			}
 			param.setParameterName(name);
 			param.setParameterType(type);
