@@ -254,7 +254,7 @@ public class Launcher {
 			String description = put.getOperationDescription();
 			
 			for(Parameter p : parameters){
-				
+				System.out.println("name : " + p.getParameterName()+" , in : "+p.getParameterLocation());
 				if(p.getParameterLocation() != null && p.getParameterLocation().equals("path")){
 					switch (p.getParameterType()){
 					case "integer":
@@ -268,10 +268,10 @@ public class Launcher {
 					default:
 						urlToTest = urlToTest.replaceFirst("\\{"+p.getParameterName()+"\\}", "3");
 						break;
-				}
+					}
 				}
 				
-				if(p.getParameterLocation() != null && p.getParameterLocation().equals("body")){
+				//else if(p.getParameterLocation() != null && p.getParameterLocation().equals("body")){
 					switch (p.getParameterType()){
 					case "integer":
 						Random random=new Random();
@@ -303,7 +303,9 @@ public class Launcher {
 						}
 						break;
 					}
-				}
+				//}
+				
+				
 			}
 			
 			Query query = new Query("PUT", urlToTest, "Test: " + description, put);
