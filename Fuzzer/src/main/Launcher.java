@@ -15,8 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,9 +44,19 @@ public class Launcher {
 	public final static String urlBase = "http://petstore.swagger.io/v2";
 	//public final static String urlBase = "http://localhost:8080";
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		
+		//Ask for an url 
+		Scanner scan = new Scanner(System.in);
+		String urlUser = "";
+		String typeUrl = "";
+		System.out.println("#################### FUZZING API SWAGGER ###############################");
+		System.out.println("###################################################");
+		System.out.println("ENTRER UNE URL : ");
+		urlUser = scan.nextLine();
+
 		//Step 1
-		ApiPaths qu = JsonParser.modelBuilding();
+		ApiPaths qu = JsonParser.modelBuilding(urlUser);
 
 		System.out.println("############ VISULATION DE L'OBJET CREE A PARTIR DE JSON PARSER ###########################");
 		System.out.println(qu.toString());

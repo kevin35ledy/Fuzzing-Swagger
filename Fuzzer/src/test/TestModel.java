@@ -67,7 +67,7 @@ public class TestModel {
 			parameters.add(i, param);
 		}
 		op1.setParameters(parameters);
-		Swagger swagger = JsonParser.getJson();
+		Swagger swagger = JsonParser.getJson("http://petstore.swagger.io/v2/swagger.json");
 		
 		
 		List<Parameter> l1 = JsonParser.getParametersFromOperation(swagger, op1);
