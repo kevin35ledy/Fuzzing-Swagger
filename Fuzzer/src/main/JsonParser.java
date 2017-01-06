@@ -56,7 +56,7 @@ public class JsonParser {
 		try {
 			
 			
-			if(StringUtils.contains(urlUser, "localhost")){
+			if(urlUser.contains("localhost")){
 				
 				URL url = new URL(urlUser);
 				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
