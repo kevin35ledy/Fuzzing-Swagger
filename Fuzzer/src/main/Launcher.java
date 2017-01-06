@@ -39,8 +39,8 @@ import model.SwaggerResponse;
 
 public class Launcher {
 
-	public final static String urlBase = "http://petstore.swagger.io/v2";
-	//public final static String urlBase = "http://localhost:8080";
+	//public final static String urlBase = "http://petstore.swagger.io/v2";
+	public final static String urlBase = "https://api.uber.com/v1";
 	
 	public static void main(String[] args) {		
 		//Step 1
@@ -220,7 +220,22 @@ public class Launcher {
 						//check negatives value
 						requests.add(intNegVal(urlToTest, p, description, get));
 						break;
-
+					case "number" :
+						//check empty
+						requests.add(empty(urlToTest, p, description, get));
+						//check buffer overflow with length
+						requests.add(intBufferOver(urlToTest, p, description, 10, get));
+						requests.add(intBufferOver(urlToTest, p, description, 25, get));
+						requests.add(intBufferOver(urlToTest, p, description,100, get));
+						requests.add(intBufferOver(urlToTest, p, description,200, get));
+						requests.add(intBufferOver(urlToTest, p, description,500, get));
+						//check string
+						requests.add(randomString(urlToTest, p, description, get));
+						//check 0 value
+						requests.add(intZero(urlToTest, p, description, get));
+						//check negatives value
+						requests.add(intNegVal(urlToTest, p, description, get));
+						break;
 					case "string":
 						//check empty string 
 						requests.add(empty(urlToTest, p, description, get));
