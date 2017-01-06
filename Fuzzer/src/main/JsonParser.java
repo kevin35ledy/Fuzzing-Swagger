@@ -50,35 +50,43 @@ public class JsonParser {
 	 * Get a Swagger Object from a url
 	 * @return a Swagger Object
 	 */
-	public static Swagger getJson(){
+	public static Swagger getJson(String urlUser){
 	
 		Swagger swagger = null;
 		try {
-			/**/
-			URL url = new URL("http://localhost:8080/api-docs");
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			
+			
+			if(StringUtils.contains(urlUser, "localhost")){
+				
+				URL url = new URL(urlUser);
+				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
-			connection.connect();
-			//InputStream in = connection.getInputStream();
-			InputStreamReader in = new InputStreamReader((InputStream) connection.getContent());
-		    BufferedReader buff = new BufferedReader(in);
-		    StringBuffer text = new StringBuffer();
-		    String line;
-		    do {
-		      line = buff.readLine();
-		      text.append(line + "\n");
-		    } while (line != null);
-		    
-		    String json = text.toString();
-		    
-			ObjectMapper ob = new ObjectMapper();
+				connection.connect();
+				//InputStream in = connection.getInputStream();
+				InputStreamReader in = new InputStreamReader((InputStream) connection.getContent());
+			    BufferedReader buff = new BufferedReader(in);
+			    StringBuffer text = new StringBuffer();
+			    String line;
+			    do {
+			      line = buff.readLine();
+			      text.append(line + "\n");
+			    } while (line != null);
+			    
+			    String json = text.toString();
+			    
+				ObjectMapper ob = new ObjectMapper();
+				
+				JsonNode node = ob.readTree(json);
+				
+				swagger = new SwaggerParser().read(node);
+				root = new ObjectMapper().readTree(json);
+			}
+
 			
-			JsonNode node = ob.readTree(json);
-			
-			swagger = new SwaggerParser().read(node);
-			root = new ObjectMapper().readTree(json);
-			/**/
-		
+			else{
+				swagger = new SwaggerParser().read(urlUser);
+				root = new ObjectMapper().readTree(new URL(urlUser));	
+			}
 			/** /
 			swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
 			root = new ObjectMapper().readTree(new URL("http://petstore.swagger.io/v2/swagger.json"));
@@ -259,10 +267,10 @@ public class JsonParser {
 	 * 
 	 * @return ApiPaths Object
 	 */
-	public static ApiPaths modelBuilding(){
+	public static ApiPaths modelBuilding(String urlUser){
 		
 		//retrieve the swagger object
-		Swagger swagger = getJson();
+		Swagger swagger = getJson(urlUser);
 		
 		
 		ApiPaths result = new ApiPaths();
