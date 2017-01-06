@@ -3,7 +3,11 @@ package main;
 import io.swagger.parser.SwaggerParser;
 import model.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,10 +54,36 @@ public class JsonParser {
 	
 		Swagger swagger = null;
 		try {
+			/**/
+			URL url = new URL("http://localhost:8080/api-docs");
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+			connection.connect();
+			//InputStream in = connection.getInputStream();
+			InputStreamReader in = new InputStreamReader((InputStream) connection.getContent());
+		    BufferedReader buff = new BufferedReader(in);
+		    StringBuffer text = new StringBuffer();
+		    String line;
+		    do {
+		      line = buff.readLine();
+		      text.append(line + "\n");
+		    } while (line != null);
+		    
+		    String json = text.toString();
+		    
+			ObjectMapper ob = new ObjectMapper();
+			
+			JsonNode node = ob.readTree(json);
+			
+			swagger = new SwaggerParser().read(node);
+			root = new ObjectMapper().readTree(json);
+			/**/
+		
+			/** /
 			swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
-			
-			
 			root = new ObjectMapper().readTree(new URL("http://petstore.swagger.io/v2/swagger.json"));
+			/ **/
+			
 	
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e.getMessage());

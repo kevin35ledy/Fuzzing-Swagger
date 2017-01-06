@@ -40,7 +40,8 @@ import model.SwaggerResponse;
 public class Launcher {
 
 	public final static String urlBase = "http://petstore.swagger.io/v2";
-
+	//public final static String urlBase = "http://localhost:8080";
+	
 	public static void main(String[] args) {		
 		//Step 1
 		ApiPaths qu = JsonParser.modelBuilding();
